@@ -3,20 +3,22 @@ import { Layout } from "@/layouts/layout";
 import { TitleAndMetaTags } from "@/components/seo";
 import { Hero } from "@/components/hero";
 import { DocsCard } from "@/components/docs-card";
+import NonSSRWrapper from "@/components/non-ssr-wrapper";
 
 import type { NextPage } from "next";
-import { Suspense } from "react";
 
 const QueryExample: React.FC = () => {
-  const query = useQuery({
-    staleWhileRevalidate: true,
-  });
+  const query = useQuery();
 
-  if (query.$state.isLoading) {
+  if (!query.greet) {
     return <p className="font-mono font-semibold text-slate-300">Loading query</p>;
   }
 
-  return <p className="font-mono font-semibold text-slate-300">{query.greet}</p>;
+  if (query.greet) {
+    return <p className="font-mono font-semibold text-slate-300">{query.greet}</p>
+  }
+
+  return null;
 };
 
 const Home: NextPage = () => {
@@ -28,9 +30,9 @@ const Home: NextPage = () => {
         <div className="flex w-full flex-col items-center justify-between">
           <div className="flex max-w-5xl flex-col items-center justify-center px-6">
             <div className="mb-24 w-fit rounded-md border-2 border-slate-200/5 bg-slate-400/10 px-10 py-2 text-center">
-              <Suspense fallback="Loading...">
+              <NonSSRWrapper>
                 <QueryExample />
-              </Suspense>
+              </NonSSRWrapper>
             </div>
             <div className="grid grid-cols-3 gap-6">
               <DocsCard
