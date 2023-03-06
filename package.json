@@ -1,0 +1,27 @@
+{
+  "name": "cardinal",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "clean": "rimraf node_modules pnpm-lock.yaml",
+    "build": "turbo build",
+    "dev": "turbo dev --parallel",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{js,mjs,cjs,jsx,ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@typescript-eslint/eslint-plugin": "^5.54.0",
+    "@typescript-eslint/parser": "^5.54.0",
+    "eslint": "8.35.0",
+    "prettier": "latest",
+    "prettier-plugin-tailwindcss": "^0.2.4",
+    "rimraf": "latest",
+    "turbo": "latest"
+  },
+  "packageManager": "pnpm@7.13.6"
+}
