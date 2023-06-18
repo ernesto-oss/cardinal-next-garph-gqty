@@ -1,0 +1,7 @@
+type Query {
+  """Greets a person"""
+  greet: String!
+
+  """Greets a person from a protected query"""
+  protected: String!
+}

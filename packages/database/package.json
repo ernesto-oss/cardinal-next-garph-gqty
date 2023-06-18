@@ -1,0 +1,20 @@
+{
+  "name": "@acme/database",
+  "version": "1.0.0",
+  "main": "index.js",
+  "types": "index.js",
+  "scripts": {
+    "db-drop": "pnpm with-env drizzle-kit drop out=drizzle",
+    "db-introspect": "pnpm with-env drizzle-kit introspect:mysql",
+    "db-migration": "pnpm with-env drizzle-kit generate",
+    "with-env": "dotenv -e ../../.env"
+  },
+  "dependencies": {
+    "@acme/config": "workspace:*",
+    "@planetscale/database": "~1.7.0",
+    "drizzle-orm": "^0.26.5"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.18.1"
+  }
+}
