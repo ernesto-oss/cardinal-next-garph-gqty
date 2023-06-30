@@ -1,6 +1,13 @@
-import React from 'react';
-import { cookies } from 'next/headers';
-import { createClient, createGeneratedSchema, createScalarsEnumsHash, schema, type QueryFetcher } from '@acme/api'
+import { cookies } from "next/headers";
+
+import {
+  createClient,
+  createGeneratedSchema,
+  createScalarsEnumsHash,
+  schema,
+  type QueryFetcher,
+} from "@acme/api";
+import { SESSION_COOKIE_NAME } from "@acme/auth";
 
 export const getBaseUrl = () => {
   if (process.env.VERCEL_URL) {
@@ -17,28 +24,21 @@ export const getBaseUrl = () => {
 //   };
 // }
 
-// export function getDefaultGraphqlHeaders(
-//   operation: GraphqlOperation | GraphqlOperation[],
-// ) {
-//   const options = {
-//     method: 'POST',
-//     body: JSON.stringify(operation),
-//     headers: {
-//       Accept: 'application/json',
-//       'content-type': 'application/json',
-//       'content-length': Buffer.byteLength(JSON.stringify(operation)).toString(),
-//     },
-//   } as RequestInit;
-//   return options;
-// }
+// headers: {
+//   'content-length': Buffer.byteLength(JSON.stringify(operation)).toString(),
+//  },
 
-function createQueryFetcher (fetchOptions?: RequestInit): QueryFetcher {
-  return async function (
-    { query, variables, operationName }
-  ) {
+function createQueryFetcher(fetchOptions?: RequestInit): QueryFetcher {
+  const authorizedRequestSession = cookies().get(SESSION_COOKIE_NAME)?.value;
+
+  return async function ({ query, variables, operationName }) {
     const response = await fetch(`${getBaseUrl()}/api/graphql`, {
       method: "POST",
       headers: {
+        Authorization: authorizedRequestSession
+          ? `Bearer ${authorizedRequestSession}`
+          : "",
+        Accept: "application/json",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -48,14 +48,15 @@ function createQueryFetcher (fetchOptions?: RequestInit): QueryFetcher {
       }),
       mode: "cors",
       ...fetchOptions,
-    })
+    });
 
-    return await response.json()
-  }
+    const result = await response.json();
+    return result;
+  };
 }
 
 export const client = createClient({
   fetcher: createQueryFetcher(),
   generatedSchema: createGeneratedSchema(schema),
-  scalarsEnumsHash: createScalarsEnumsHash(schema)
+  scalarsEnumsHash: createScalarsEnumsHash(schema),
 });
