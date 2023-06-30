@@ -2,14 +2,18 @@
 /** @typedef  {import("prettier").Config} PrettierConfig*/
 /** @typedef  {{ tailwindConfig: string }} TailwindConfig*/
 
-const baseConfig = require('../../prettier.config.cjs');
-
 /** @type { PrettierConfig | SortImportsConfig | TailwindConfig } */
 const config = {
-  ...baseConfig,
+  arrowParens: "always",
+  printWidth: 80,
+  singleQuote: false,
+  jsxSingleQuote: false,
+  semi: true,
+  trailingComma: "all",
+  tabWidth: 2,
   plugins: [
-    "@ianvs/prettier-plugin-sort-imports",
-    "prettier-plugin-tailwindcss",
+    require.resolve("@ianvs/prettier-plugin-sort-imports"),
+    require.resolve("prettier-plugin-tailwindcss"),
   ],
   tailwindConfig: "./tailwind.config.js",
   importOrder: [
@@ -26,6 +30,7 @@ const config = {
     "^[./]",
   ],
   importOrderParserPlugins: ["typescript", "jsx", "decorators-legacy"],
+  importOrderTypeScriptVersion: "5.0.4"
 };
 
 module.exports = config;
