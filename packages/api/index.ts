@@ -1,78 +1,64 @@
-import { createYoga } from "graphql-yoga";
+import { headers } from "next/headers";
+import { auth, Session } from "@acme/auth";
+import { YogaInitialContext, createYoga } from "graphql-yoga";
 import { g, buildSchema, InferResolvers } from "garph";
 import { InferClient } from "garph/dist/client";
-import {
-  createGeneratedSchema,
-  createScalarsEnumsHash,
-} from "@garph/gqty/dist/utils";
-import {
-  createClient as createGQtyClient,
-  Cache,
-  QueryFetcher,
-  ScalarsEnumsHash,
-  Schema,
-  SubscriptionClient,
-  CacheOptions,
-} from "gqty";
+import { createGeneratedSchema, createScalarsEnumsHash } from "./utils";
+import { createClient, type QueryFetcher } from "./client";
+
+type Context = YogaInitialContext & {
+  session: Session;
+};
 
 const queryType = g.type("Query", {
   greetings: g.string().description("Greets a person"),
+  authorizedOnly: g
+    .string()
+    .optional()
+    .description("Sends a message only to authorized users"),
 });
 
-const resolvers: InferResolvers<{ Query: typeof queryType }, {}> = {
+const resolvers: InferResolvers<
+  { Query: typeof queryType },
+  { context: Context }
+> = {
   Query: {
-    greetings: () => `Greetings from GraphQL`,
+    greetings: () => {
+      return `Greetings from GraphQL`;
+    },
+    authorizedOnly: (_parent, _args, context) => {
+      console.log(context.session);
+      if (context.session) {
+        return "Greetings from protected query";
+      } else {
+        return null;
+      }
+    },
   },
 };
 
-type SchemaTypes = InferClient<{ query: typeof queryType }>;
-
-type ClientOptions = {
-  generatedSchema: Schema;
-  scalarsEnumsHash: ScalarsEnumsHash;
-  fetcher: QueryFetcher;
-  fetchOptions?: RequestInit;
-  subscriptionClient?: SubscriptionClient;
-  cacheOptions?: CacheOptions;
-};
+export type SchemaTypes = InferClient<{ query: typeof queryType }>;
 
 export const schema = buildSchema({ g, resolvers });
-
-export function createClient<T extends SchemaTypes>(options: ClientOptions) {
-  type Query = T['query'];
-  type GeneratedSchema = { query: Query }
-
-  const cache = new Cache(
-    undefined,
-    /**
-     * Default cache options immediate expiry with a 5 minutes window of
-     * stale-while-revalidate.
-     */
-    {
-      maxAge: 0,
-      staleWhileRevalidate: 5 * 60 * 1000,
-      normalization: true,
-      ...options.cacheOptions
-    }
-  )
-
-  const client = createGQtyClient<GeneratedSchema>({
-    scalars: options.scalarsEnumsHash,
-    schema: options.generatedSchema,
-    cache,
-    fetchOptions: {
-      fetcher: options.fetcher,
-    }
-  })
-
-  return client;
-} 
 
 const { handleRequest } = createYoga({
   fetchAPI: { Response },
   schema: schema,
   graphqlEndpoint: "/api/graphql",
+  context: async () => {
+    const authorizationHeader = headers().get("authorization");
+    const sessionToken = authorizationHeader?.split(" ").pop();
+    if (sessionToken) {
+      const session = await auth.validateSessionUser(sessionToken);
+      return { session };
+    }
+  },
 });
 
-export { handleRequest, createGeneratedSchema, createScalarsEnumsHash };
-export type { ClientOptions, QueryFetcher }
+export {
+  handleRequest,
+  createGeneratedSchema,
+  createScalarsEnumsHash,
+  createClient,
+};
+export type { QueryFetcher };
