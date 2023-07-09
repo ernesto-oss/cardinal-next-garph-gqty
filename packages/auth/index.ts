@@ -1,8 +1,9 @@
 import { connection } from "@acme/database";
 import { planetscale } from "@lucia-auth/adapter-mysql";
-import lucia from "lucia-auth";
-import { nextjs } from "lucia-auth/middleware";
+import { lucia } from "lucia";
+import { nextjs } from "lucia/middleware";
 
+export const SESSION_COOKIE_NAME = "auth_session";
 /**
  * This is the Lucia Auth initializer. From here, you can define
  * how Lucia connects with your database, session expiry and
@@ -11,22 +12,21 @@ import { nextjs } from "lucia-auth/middleware";
  * @see https://lucia-auth.com/start-here/getting-started
  */
 export const auth = lucia({
-  adapter: planetscale(connection),
+  adapter: planetscale(connection, {
+    key: "auth_key",
+    session: "auth_session",
+    user: "auth_user"
+  }),
   env: process.env.NODE_ENV === "development" ? "DEV" : "PROD",
   middleware: nextjs(),
-  transformDatabaseUser: (userData) => {
+  getUserAttributes: (userData) => {
     return {
       userId: userData.id,
       email: userData.email,
     };
   },
-  sessionExpiresIn: {
-    activePeriod: 1000 * 60 * 60 * 24 * 7, // 1 week
-    idlePeriod: 0, // disable session renewal
-  },
-  experimental: {
-    debugMode: true,
-  },
+  sessionCookie: { name: SESSION_COOKIE_NAME, expires: false },
+  csrfProtection: false,
 });
 
 export type ErrorMessage =
@@ -45,8 +45,8 @@ export type ErrorMessage =
   | "AUTH_EXPIRED_KEY";
 
 export type Auth = typeof auth;
-export type { Session } from "lucia-auth";
-export { LuciaError, SESSION_COOKIE_NAME } from "lucia-auth";
+export type { Session } from "lucia";
+export { LuciaError } from "lucia";
 
 /* Export providers */
 export {

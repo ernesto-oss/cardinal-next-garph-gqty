@@ -27,7 +27,6 @@ const resolvers: InferResolvers<
       return `Greetings from GraphQL`;
     },
     authorizedOnly: (_parent, _args, context) => {
-      console.log(context.session);
       if (context.session) {
         return "Greetings from protected query";
       } else {

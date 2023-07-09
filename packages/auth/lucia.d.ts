@@ -1,7 +1,7 @@
-/// <reference types="lucia-auth" />
+/// <reference types="lucia" />
 declare namespace Lucia {
-  type Auth = import('./index').Auth;
-  type UserAttributes = {
-    email: string;
-  };
+	type Auth = import("./index").Auth;
+	type DatabaseUserAttributes = {
+		email: string;
+	};
 }

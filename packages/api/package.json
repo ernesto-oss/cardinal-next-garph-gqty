@@ -11,11 +11,11 @@
     "@acme/auth": "workspace:*",
     "@acme/database": "workspace:*",
     "garph": "^0.5.7",
-    "gqty": "3.0.0-alpha-e9f8f97b.0",
-    "graphql": "^16.6.0",
-    "graphql-yoga": "^4.0.2"
+    "gqty": "3.0.0-alpha-577a9298.0",
+    "graphql": "^16.7.1",
+    "graphql-yoga": "^4.0.3"
   },
   "devDependencies": {
-    "next": "13.4.4"
+    "next": "13.4.9"
   }
 }

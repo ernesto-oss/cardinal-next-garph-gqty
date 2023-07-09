@@ -115,6 +115,11 @@ export const UserAuthForm: React.FC<UserAuthFormProps> = ({
                 Wrong email or password. Try again.
               </p>
             )}
+            {error === "AUTH_DUPLICATE_KEY_ID" && (
+              <p className="px-1 text-center text-xs text-pink-500">
+                An account with that email already exists.
+              </p>
+            )}
             {error === "AUTH_INVALID_PASSWORD" && (
               <p className="px-1 text-center text-xs text-pink-500">
                 Wrong email or password. Try again.
