@@ -1,4 +1,5 @@
-import { headers } from "next/headers";
+import { cookies } from "next/headers";
+import { type NextRequest } from "next/server";
 import { auth, Session } from "@acme/auth";
 import { YogaInitialContext, createYoga } from "graphql-yoga";
 import { g, buildSchema, InferResolvers } from "garph";
@@ -7,7 +8,8 @@ import { createGeneratedSchema, createScalarsEnumsHash } from "./utils";
 import { createClient, type QueryFetcher } from "./client";
 
 type Context = YogaInitialContext & {
-  session: Session;
+  session: Session | null;
+  request: NextRequest;
 };
 
 const queryType = g.type("Query", {
@@ -24,7 +26,7 @@ const resolvers: InferResolvers<
 > = {
   Query: {
     greetings: () => {
-      return `Greetings from GraphQL`;
+      return "Greetings from GraphQL";
     },
     authorizedOnly: (_parent, _args, context) => {
       if (context.session) {
@@ -40,17 +42,14 @@ export type SchemaTypes = InferClient<{ query: typeof queryType }>;
 
 export const schema = buildSchema({ g, resolvers });
 
-const { handleRequest } = createYoga({
+const { handleRequest } = createYoga<Context>({
   fetchAPI: { Response },
   schema: schema,
   graphqlEndpoint: "/api/graphql",
-  context: async () => {
-    const authorizationHeader = headers().get("authorization");
-    const sessionToken = authorizationHeader?.split(" ").pop();
-    if (sessionToken) {
-      const session = await auth.validateSessionUser(sessionToken);
-      return { session };
-    }
+  context: async ({ request }) => {
+    const authRequest = auth.handleRequest({ cookies, request });
+    const session = await authRequest.validateBearerToken();
+    return { session };
   },
 });
 

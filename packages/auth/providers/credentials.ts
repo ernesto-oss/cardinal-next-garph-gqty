@@ -81,7 +81,7 @@ export async function credentialsHandler(
         return NextResponse.json({ error: error.message }, { status: 403 });
       else {
         console.error(error);
-        // return NextResponse.json({ error: "UNKNOWN_ERROR" }, { status: 500 });
+        return NextResponse.json({ error: "UNKNOWN_ERROR" }, { status: 500 });
       }
     }
 

@@ -11,10 +11,10 @@
   },
   "dependencies": {
     "@acme/config": "workspace:*",
-    "@planetscale/database": "~1.8.0",
-    "drizzle-orm": "^0.27.0"
+    "@planetscale/database": "~1.10.0",
+    "drizzle-orm": "^0.27.2"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.19.3"
+    "drizzle-kit": "^0.19.12"
   }
 }
