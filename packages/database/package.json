@@ -4,6 +4,8 @@
   "main": "index.js",
   "types": "index.js",
   "scripts": {
+    "format": "pnpm prettier . --check --ignore-unknown",
+    "format:write": "pnpm format --writer",
     "db-drop": "pnpm with-env drizzle-kit drop out=drizzle",
     "db-introspect": "pnpm with-env drizzle-kit introspect:mysql",
     "db-migration": "pnpm with-env drizzle-kit generate",
@@ -15,6 +17,8 @@
     "drizzle-orm": "^0.27.2"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.19.12"
+    "@ianvs/prettier-plugin-sort-imports": "^4.1.0",
+    "drizzle-kit": "^0.19.12",
+    "prettier": "^3.0.0"
   }
 }

@@ -2,7 +2,5 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {},
   "extends": "../../tsconfig.json",
-  "include": [
-    "index.ts"
-  ]
+  "include": ["index.ts"]
 }

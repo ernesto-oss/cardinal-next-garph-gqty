@@ -1,7 +1,9 @@
-import { connection } from "@acme/database";
-import { planetscale } from "@lucia-auth/adapter-mysql";
 import { lucia } from "lucia";
 import { nextjs } from "lucia/middleware";
+
+import { planetscale } from "@lucia-auth/adapter-mysql";
+
+import { connection } from "@acme/database";
 
 export const SESSION_COOKIE_NAME = "auth_session";
 /**
@@ -15,7 +17,7 @@ export const auth = lucia({
   adapter: planetscale(connection, {
     key: "auth_key",
     session: "auth_session",
-    user: "auth_user"
+    user: "auth_user",
   }),
   env: process.env.NODE_ENV === "development" ? "DEV" : "PROD",
   middleware: nextjs(),

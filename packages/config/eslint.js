@@ -2,8 +2,8 @@
 const config = {
   extends: [
     "next",
-    "plugin:@typescript-eslint/recommended",
     "prettier",
+    "plugin:@typescript-eslint/recommended",
   ],
   rules: {
     "@next/next/no-html-link-for-pages": "off",

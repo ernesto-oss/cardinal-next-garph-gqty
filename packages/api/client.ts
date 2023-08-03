@@ -1,11 +1,11 @@
 import {
-  createClient as createGQtyClient,
   Cache,
+  CacheOptions,
+  createClient as createGQtyClient,
   QueryFetcher,
   ScalarsEnumsHash,
   Schema,
   SubscriptionClient,
-  CacheOptions,
 } from "gqty";
 
 import { type SchemaTypes } from "./index";

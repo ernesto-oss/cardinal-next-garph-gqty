@@ -26,7 +26,7 @@ export const credentialsAuthSchema = z.object({
  */
 export async function credentialsHandler(
   request: NextRequest,
-  { params }: { params: { luciaAuth: CredentialsOperations } }
+  { params }: { params: { luciaAuth: CredentialsOperations } },
 ) {
   const operation = params.luciaAuth;
 
@@ -58,7 +58,6 @@ export async function credentialsHandler(
             email,
           },
         });
-
 
         /**
          * Create the session on the database, and generate a new session that

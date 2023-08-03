@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "main": "index.ts",
   "license": "MIT",
+  "scripts": {
+    "format": "pnpm prettier . --check --ignore-unknown",
+    "format:write": "pnpm format --writer"
+  },
   "dependencies": {
     "@acme/config": "workspace:*",
     "@acme/database": "workspace:*",
@@ -11,6 +15,8 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "next": "13.4.12"
+    "@ianvs/prettier-plugin-sort-imports": "^4.1.0",
+    "next": "13.4.12",
+    "prettier": "^3.0.0"
   }
 }
